@@ -73,9 +73,18 @@ func update(pod, user, nimbusLocation, testbed string, days int) {
 		fmt.Printf("Error: %s\n", err.Error())
 	}
 
+	stderrReader, err := cmd.StderrPipe()
+	if err != nil {
+		fmt.Printf("Error:%s\n", err.Error())
+	}
+
 	cmd.Start()
-	if out, err := ioutil.ReadAll(stdoutReader); err != nil {
+	if out, err := ioutil.ReadAll(stdoutReader); err == nil {
 		fmt.Printf("%s\n", out)
+	}
+
+	if errOut, err := ioutil.ReadAll(stderrReader); err == nil {
+		fmt.Printf("%s\n", errOut)
 	}
 
 	if err := cmd.Wait(); err != nil {
